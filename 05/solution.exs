@@ -87,20 +87,51 @@ defmodule PartOne do
   end
 end
 
-grid = Input.input
-|> PartOne.grid
+# grid = Input.input
+# |> PartOne.grid
+#
+# h_or_v_lines = Input.input
+#                |> Enum.filter(fn line -> PartOne.horizontal?(line) || PartOne.vertical?(line) end)
+#
+# grid
+# |> PartOne.mark(h_or_v_lines)
+# |> List.flatten
+# |> Enum.count(&(&1 > 1))
+# |> IO.inspect
+#
+# grid
+# |> PartOne.mark(Input.input)
+# |> List.flatten
+# |> Enum.count(&(&1 > 1))
+# |> IO.inspect
 
-h_or_v_lines = Input.input
-               |> Enum.filter(fn line -> PartOne.horizontal?(line) || PartOne.vertical?(line) end)
+defmodule Improved do
+  def go do
+    File.read("input.txt")
+    |> then(fn {:ok, contents} -> contents end)
+    |> then(&Regex.scan(~r/\d+/, &1))
+    |> Stream.map(fn [x] -> String.to_integer(x) end)
+    |> Stream.chunk_every(2)
+    |> Stream.chunk_every(2)
+    |> Stream.map(&generate_line/1)
+    |> Stream.flat_map(&(&1))
+    |> Enum.frequencies
+    |> Map.values
+    |> Enum.filter(&(&1 >= 2))
+    |> Enum.count
+  end
 
-grid
-|> PartOne.mark(h_or_v_lines)
-|> List.flatten
-|> Enum.count(&(&1 > 1))
-|> IO.inspect
+  def generate_line([[x1, y1], [x2, y2]]) when x1 == x2 do
+    for y <- y1..y2//if(y1<y2, do: 1, else: -1), do: {x1, y}
+  end
+  def generate_line([[x1, y1], [x2, y2]]) when y1 == y2 do
+    for x <- x1..x2//if(x1<x2, do: 1, else: -1), do: {x, y1}
+  end
+  def generate_line([[x1, y1], [x2, y2]]) do
+    xrange = x1..x2//if(x1<x2, do: 1, else: -1)
+    yrange = y1..y2//if(y1<y2, do: 1, else: -1)
+    Enum.zip(xrange, yrange)
+  end
+end
 
-grid
-|> PartOne.mark(Input.input)
-|> List.flatten
-|> Enum.count(&(&1 > 1))
-|> IO.inspect
+IO.inspect(Improved.go)
