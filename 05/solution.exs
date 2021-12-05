@@ -78,10 +78,10 @@ defmodule PartOne do
   def mark(:diagonal, grid, [line | lines], step) do
     [a, b] = line
     [[x1, y1], [x2, y2]] = Enum.sort_by([a, b], &List.first/1) 
-    path_space = for x <- x1..x2, y <- y1..y2//step, do: [x, y]
-    path_space
-    |> Enum.chunk_every(x2 - x1 + 1)
-    |> Enum.with_index(fn chunk, i -> Enum.at(chunk, i) end)
+    xr = x1..x2
+    yr = y1..y2//step
+    Enum.zip(xr, yr)
+    |> Enum.map(fn {x,y} -> [x, y] end)
     |> Enum.reduce(grid, fn point, grid -> increment(point, grid) end)
     |> mark(lines)
   end
