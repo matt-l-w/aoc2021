@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+last=`fd -td . | grep -v templates | tail -n1`
+next=$((last + 1))
+next_formatted=`printf "%02d" $next`
+
+cp -R templates $next_formatted
+source cd $_
+
