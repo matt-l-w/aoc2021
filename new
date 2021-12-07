@@ -7,3 +7,5 @@ next_formatted=`printf "%02d" $next`
 cp -R templates $next_formatted
 source cd $_
 
+open -a "google chrome" "https://adventofcode.com/2021/day/$next"
+
